@@ -15,6 +15,18 @@ class App extends Component {
   filter: ''  
   }
 
+  componentDidMount() {
+    const initialContacts = JSON.parse(localStorage.getItem('contacts'))
+
+    if(initialContacts) {this.setState({ contacts: initialContacts})}   
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+    }
+  }
+
   checkUniqueName = data => {
     const normalizedName = data.name.toLowerCase();
     const duplicatedName = this.state.contacts.find(contact => contact.name.toLocaleLowerCase() === normalizedName)
@@ -61,9 +73,8 @@ class App extends Component {
 
     return (
     <>
-      <h1>Phonebook</h1>
-      {/* <Form handlerSubmit={this.handlerSubmit} handleChange={this.handleChange}/> форма через функцію */}
-        <Form onSubmit={this.handlerSubmit} contacts={this.state.contacts}/>
+      <h1>Phonebook</h1>     
+      <Form onSubmit={this.handlerSubmit} contacts={this.state.contacts}/>
       <h2>Contacts</h2>
       <Filter handleChange={this.changeFilter} filter={this.state.filter}/>      
       <ContactsList contacts={filteredContacts} handleDelete={this.handleDelete}/>
